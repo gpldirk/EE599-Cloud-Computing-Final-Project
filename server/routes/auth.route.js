@@ -14,14 +14,14 @@ const {
 
 
 const {
-    validSign,
+    validSignup,
     validLogin,
     forgotPasswordValidator,
     resetPasswordValidator
-} = require('../helpers/valid')
+} = require('../helpers/validators')
 
 router.post('/register',
-    validSign,
+    validSignup,
     registerController)
 
 router.post('/login',

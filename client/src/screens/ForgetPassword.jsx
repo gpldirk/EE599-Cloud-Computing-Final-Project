@@ -8,10 +8,12 @@ const ForgetPassword = ({history}) => {
     email: '',
     textChange: 'Submit'
   });
+
   const { email, textChange } = formData;
   const handleChange = text => e => {
     setFormData({ ...formData, [text]: e.target.value });
   };
+
   const handleSubmit = e => {
     e.preventDefault();
     if (email) {
@@ -21,7 +23,6 @@ const ForgetPassword = ({history}) => {
           email
         })
         .then(res => {
-          
             setFormData({
               ...formData,
               email: '',
@@ -37,6 +38,7 @@ const ForgetPassword = ({history}) => {
       toast.error('Please fill all fields');
     }
   };
+
   return (
     <div className='min-h-screen bg-gray-100 text-gray-900 flex justify-center'>
       <ToastContainer />

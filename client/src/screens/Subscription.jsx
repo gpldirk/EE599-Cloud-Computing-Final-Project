@@ -1,4 +1,4 @@
-import React, { useState, Fragment, useEffect } from 'react';
+import React, { useState, Fragment } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import { toast } from 'react-toastify';
 import { getCookie } from '../helpers/auth';
@@ -30,8 +30,8 @@ const Subscription = ({ history }) => {
           product,
         })
     });
-    const res = await response.json();
 
+    const res = await response.json();
     // When the customer clicks on the button, redirect them to Checkout.
     const result = await stripe.redirectToCheckout({
       sessionId: res.sessionId,

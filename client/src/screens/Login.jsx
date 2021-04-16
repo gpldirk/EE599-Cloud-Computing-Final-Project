@@ -10,10 +10,11 @@ import FacebookLogin from 'react-facebook-login/dist/facebook-login-render-props
 const Login = ({ history }) => {
   const [formData, setFormData] = useState({
     email: '',
-    password1: '',
+    password: '',
     textChange: 'Sign In'
   });
-  const { email, password1, textChange } = formData;
+
+  const { email, password, textChange } = formData;
   const handleChange = text => e => {
     setFormData({ ...formData, [text]: e.target.value });
   };
@@ -39,19 +40,20 @@ const Login = ({ history }) => {
   };
 
   const sendFacebookToken = (userID, accessToken) => {
-    axios
-      .post(`${process.env.REACT_APP_API_URL}/facebooklogin`, {
-        userID,
-        accessToken
-      })
-      .then(res => {
-        console.log(res.data);
-        informParent(res);
+    axios({
+      method: 'POST',
+      url: `${process.env.REACT_APP_API_URL}/facebooklogin`,
+      data: { userID, accessToken },
+    })
+      .then(response => {
+        console.log(response);
+        informParent(response);
       })
       .catch(error => {
-        console.log('GOOGLE SIGNIN ERROR', error.response);
+        console.log('FACEBOOK SIGNIN ERROR', error.response);
       });
   };
+
   const responseGoogle = response => {
     console.log(response);
     sendGoogleToken(response.tokenId);
@@ -65,19 +67,19 @@ const Login = ({ history }) => {
   const handleSubmit = e => {
     console.log(process.env.REACT_APP_API_URL);
     e.preventDefault();
-    if (email && password1) {
+    if (email && password) {
       setFormData({ ...formData, textChange: 'Submitting' });
       axios
         .post(`${process.env.REACT_APP_API_URL}/login`, {
           email,
-          password: password1
+          password: password
         })
         .then(res => {
           authenticate(res, () => {
             setFormData({
               ...formData,
               email: '',
-              password1: '',
+              password: '',
               textChange: 'Submitted'
             });
             isAuth() ? history.push('/')
@@ -89,7 +91,7 @@ const Login = ({ history }) => {
           setFormData({
             ...formData,
             email: '',
-            password1: '',
+            password: '',
             textChange: 'Sign In'
           });
           console.log(err.response);
@@ -99,6 +101,7 @@ const Login = ({ history }) => {
       toast.error('Please fill all fields');
     }
   };
+
   return (
     <div className='min-h-screen bg-gray-100 text-gray-900 flex justify-center'>
       {isAuth() ? <Redirect to='/' /> : null}
@@ -108,6 +111,7 @@ const Login = ({ history }) => {
           <div className='flex flex-col items-center'>
             <div className='w-full flex-1 mt-8 text-indigo-500'>
               <div className='flex flex-col items-center'>
+
                 <GoogleLogin
                   clientId={`${process.env.REACT_APP_GOOGLE_CLIENT}`}
                   onSuccess={responseGoogle}
@@ -126,6 +130,7 @@ const Login = ({ history }) => {
                     </button>
                   )}
                 ></GoogleLogin>
+
                 <FacebookLogin
                   appId={`${process.env.REACT_APP_FACEBOOK_CLIENT}`}
                   autoLoad={false}
@@ -135,7 +140,7 @@ const Login = ({ history }) => {
                       onClick={renderProps.onClick}
                       className='w-full max-w-xs font-bold shadow-sm rounded-lg py-3 bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline mt-5'
                     >
-                      <div className=' p-2 rounded-full '>
+                      <div className='p-2 rounded-full'>
                         <i className='fab fa-facebook' />
                       </div>
                       <span className='ml-4'>Sign In with Facebook</span>
@@ -153,6 +158,7 @@ const Login = ({ history }) => {
                   <span className='ml-4'>Sign Up</span>
                 </Link>
               </div>
+              
               <div className='my-12 border-b text-center'>
                 <div className='leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2'>
                   Or sign In with e-mail
@@ -173,8 +179,8 @@ const Login = ({ history }) => {
                   className='w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5'
                   type='password'
                   placeholder='Password'
-                  onChange={handleChange('password1')}
-                  value={password1}
+                  onChange={handleChange('password')}
+                  value={password}
                 />
                 <button
                   type='submit'

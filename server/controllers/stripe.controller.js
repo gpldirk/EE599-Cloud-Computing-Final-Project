@@ -1,14 +1,14 @@
 const User = require('../models/auth.model');
 const Stripe = require('../helpers/stripe');
 
+const productToPriceMap = {
+  basic_mo: process.env.PRODUCT_BASIC_MO,
+  pro_mo: process.env.PRODUCT_PRO_MO,
+  basic_year: process.env.PRODUCT_BASIC_YEAR,
+  pro_year: process.env.PRODUCT_PRO_YEAR
+}
+
 exports.checkoutController = (req, res) => {
-  const productToPriceMap = {
-    basic_mo: process.env.PRODUCT_BASIC_MO,
-    pro_mo: process.env.PRODUCT_PRO_MO,
-    basic_year: process.env.PRODUCT_BASIC_YEAR,
-    pro_year: process.env.PRODUCT_PRO_YEAR
-  }
-  
   const { product } = req.body
   const price = productToPriceMap[product]
 

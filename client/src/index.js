@@ -9,6 +9,7 @@ import Profile from './screens/Profile.jsx';
 import ForgetPassword from './screens/ForgetPassword.jsx';
 import ResetPassword from './screens/ResetPassword.jsx';
 import Subscription from './screens/Subscription';
+import Urls from './screens/Urls';
 import PrivateRoute from './Routes/PrivateRoute';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -23,7 +24,7 @@ ReactDOM.render(
       <Route path='/auth/activate/:token' exact render={props => <Activate {...props} />} />
       <PrivateRoute path="/profile" exact component={Profile} />
       <PrivateRoute path="/subscription" exact component={Subscription} />
-
+      <PrivateRoute path="/urls" exact component={Urls} />
       <Redirect to='/' />
     </Switch>
   </BrowserRouter>,

@@ -4,6 +4,7 @@ import { signout } from './helpers/auth';
 import { ToastContainer, toast } from 'react-toastify';
 import { isAuth } from './helpers/auth';
 import { Fragment } from 'react';
+import InputBox from './screens/InputBox';
 
 function App({ history }) {
   return (
@@ -15,7 +16,8 @@ function App({ history }) {
             <h1 className='text-2xl xl:text-2xl font-extrabold  text-center '>
               TinyURL - Full Stack & Highly Scalable URL Shortening Service{' '}
             </h1>
-            <div className='w-full flex-1 mt-8 text-indigo-500'>
+            { !isAuth() ? <InputBox /> : null}
+            <div className='w-full flex-1 mt-32 text-indigo-500'>
                 <div className='mx-auto max-w-xs relative '>
 
                 { !isAuth() ? <Fragment>
@@ -39,7 +41,7 @@ function App({ history }) {
                       className='mt-5 tracking-wide font-semibold bg-orange-500 text-gray-100 w-full py-4 rounded-lg hover:bg-orange-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none'
                     >
                       <i className='fas fa-sign-in-alt  w-6  -ml-2' />
-                      <span className='ml-3'>Profile Dashbaord</span>
+                      <span className='ml-3'>Profile</span>
                     </Link>
 
                     <Link
@@ -48,6 +50,14 @@ function App({ history }) {
                     >
                       <i className='fas fa-sign-in-alt  w-6  -ml-2' />
                       <span className='ml-3'>Subscription</span>
+                    </Link>
+
+                    <Link
+                      to='/urls'
+                      className='mt-5 tracking-wide font-semibold bg-orange-500 text-gray-100 w-full py-4 rounded-lg hover:bg-orange-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none'
+                    >
+                      <i className='fas fa-sign-in-alt  w-6  -ml-2' />
+                      <span className='ml-3'>URLs</span>
                     </Link>
 
                     <button
@@ -66,6 +76,7 @@ function App({ history }) {
  
               </div>
             </div>
+
           </div>
         </div>
       </div>

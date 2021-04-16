@@ -9,6 +9,7 @@ export const setCookie = (key, value) => {
         }) 
     }
 }
+
 // remove from cookie
 export const removeCookie = key => {
     if (window !== 'undefined') {
@@ -18,16 +19,15 @@ export const removeCookie = key => {
     }
 };
 
-
-// Get from cookie such as stored token
-// Will be useful when we need to make request to server with token
+// Get token from cookie
+// send token when making request to server
 export const getCookie = key => {
     if (window !== 'undefined') {
         return cookie.get(key);
     }
 };
 
-// Set in localstorage
+// Set user info in localstorage
 export const setLocalStorage = (key, value) => {
     if (window !== 'undefined') {
         localStorage.setItem(key, JSON.stringify(value));
@@ -41,16 +41,16 @@ export const removeLocalStorage = key => {
     }
 };
 
-// Auth enticate user by passing data to cookie and localstorage during signin
+// Set cookie and localstorage during signin
 export const authenticate = (response, next) => {
-    console.log('AUTHENTICATE HELPER ON SIGNIN RESPONSE', response);
+    console.log('AUTHENTICATE HELPER ON SIGNIN', response);
     setCookie('token', response.data.token);
     setLocalStorage('user', response.data.user);
     next();
 };
 
 // Access user info from localstorage
-// {"_id":"607908a31fe0911dc2b77856","email":"lugepei1993@gmail.com","name":"Frank LU"}
+// {"_id":"607a0105e91ba50aa9e8f2ef","email":"lugepei1993@gmail.com","name":"Frank LU"}
 export const isAuth = () => {
     if (window !== 'undefined') {
         const cookieChecked = getCookie('token');
@@ -64,14 +64,16 @@ export const isAuth = () => {
     }
 };
 
+// clear localStorage and cookie when signout
 export const signout = next => {
     removeCookie('token');
     removeLocalStorage('user');
     next();
 };
 
+// update localStorage when update user info
 export const updateUser = (response, next) => {
-    console.log('UPDATE USER IN LOCALSTORAGE HELPERS', response);
+    console.log('UPDATE USER IN LOCALSTORAGE', response);
     if (typeof window !== 'undefined') {
         let auth = JSON.parse(localStorage.getItem('user'));
         auth = response.data;

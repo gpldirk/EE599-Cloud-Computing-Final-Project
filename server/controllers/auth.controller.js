@@ -6,7 +6,6 @@ const fetch = require('node-fetch');
 const { validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 const expressJWT = require('express-jwt');
-const { errorHandler } = require('../helpers/dbErrorHandling');
 const { sendEmailWithNodemailer } = require("../helpers/email");
 const Stripe = require('../helpers/stripe');
 
@@ -151,7 +150,7 @@ exports.signinController = (req, res) => {
           expiresIn: '7d'
         }
       );
-      const { _id, name, email, role } = user;
+      const { _id, name, email } = user;
 
       return res.json({
         token,
@@ -159,7 +158,6 @@ exports.signinController = (req, res) => {
           _id,
           name,
           email,
-          role
         }
       });
     });
@@ -169,27 +167,6 @@ exports.signinController = (req, res) => {
 exports.requireSignin = expressJwt({
   secret: process.env.JWT_SECRET // req.user._id
 });
-
-exports.adminMiddleware = (req, res, next) => {
-  User.findById({
-    _id: req.user._id
-  }).exec((err, user) => {
-    if (err || !user) {
-      return res.status(400).json({
-        error: 'User not found'
-      });
-    }
-
-    if (user.role !== 'admin') {
-      return res.status(400).json({
-        error: 'Admin resource. Access denied.'
-      });
-    }
-
-    req.profile = user;
-    next();
-  });
-};
 
 exports.forgotPasswordController = (req, res) => {
   const { email } = req.body;
@@ -337,10 +314,10 @@ exports.googleController = (req, res) => {
             const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
               expiresIn: '7d'
             });
-            const { _id, email, name, role } = user;
+            const { _id, email, name } = user;
             return res.json({
               token,
-              user: { _id, email, name, role }
+              user: { _id, email, name }
             });
 
           } else {
@@ -367,10 +344,10 @@ exports.googleController = (req, res) => {
                 process.env.JWT_SECRET,
                 { expiresIn: '7d' }
               );
-              const { _id, email, name, role } = data;
+              const { _id, email, name } = data;
               return res.json({
                 token,
-                user: { _id, email, name, role }
+                user: { _id, email, name }
               });
             });
           }
@@ -384,7 +361,6 @@ exports.googleController = (req, res) => {
 };
 
 exports.facebookController = (req, res) => {
-  console.log('FACEBOOK LOGIN REQ BODY', req.body);
   const { userID, accessToken } = req.body;
 
   const url = `https://graph.facebook.com/v2.11/${userID}/?fields=id,name,email&access_token=${accessToken}`;
@@ -396,6 +372,8 @@ exports.facebookController = (req, res) => {
       .then(response => response.json())
       // .then(response => console.log(response))
       .then(response => {
+        console.log(response)
+
         const { email, name } = response;
         User.findOne({ email }).exec(async (err, user) => {
           if (user) {
@@ -410,10 +388,10 @@ exports.facebookController = (req, res) => {
             const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
               expiresIn: '7d'
             });
-            const { _id, email, name, role } = user;
+            const { _id, email, name } = user;
             return res.json({
               token,
-              user: { _id, email, name, role }
+              user: { _id, email, name }
             });
           } else {
 
@@ -439,10 +417,10 @@ exports.facebookController = (req, res) => {
                 process.env.JWT_SECRET,
                 { expiresIn: '7d' }
               );
-              const { _id, email, name, role } = data;
+              const { _id, email, name } = data;
               return res.json({
                 token,
-                user: { _id, email, name, role }
+                user: { _id, email, name }
               });
             });
           }

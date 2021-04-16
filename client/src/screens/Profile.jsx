@@ -9,14 +9,10 @@ const Profile = ({ history }) => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    password1: '',
+    password: '',
     textChange: 'Update',
     plan: ''
   });
-
-  useEffect(() => {
-    loadProfile();
-  }, []);
 
   const loadProfile = () => {
     const token = getCookie('token');
@@ -40,10 +36,16 @@ const Profile = ({ history }) => {
         }
       });
   };
-  const { name, email, password1, textChange, plan } = formData;
+
+  useEffect(() => {
+    loadProfile();
+  }, []);
+
+  const { name, email, password, textChange, plan } = formData;
   const handleChange = text => e => {
     setFormData({ ...formData, [text]: e.target.value });
   };
+
   const handleSubmit = e => {
     const token = getCookie('token');
     console.log(token);
@@ -55,7 +57,7 @@ const Profile = ({ history }) => {
         {
           name,
           email,
-          password: password1
+          password: password
         },
         {
           headers: {
@@ -85,7 +87,7 @@ const Profile = ({ history }) => {
 
     fetch(`${process.env.REACT_APP_API_URL}/billing`, requestOptions)
       .then((response) => response.json())
-      .then((result) => window.open(result.url))
+      .then((result) => window.open(result.url, "_blank"))
       .catch((err) => toast.error(err.response.data.errors))
   };
 
@@ -123,8 +125,8 @@ const Profile = ({ history }) => {
                   className='w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5'
                   type='password'
                   placeholder='Password'
-                  onChange={handleChange('password1')}
-                  value={password1}
+                  onChange={handleChange('password')}
+                  value={password}
                 />
                 <button
                   type='submit'

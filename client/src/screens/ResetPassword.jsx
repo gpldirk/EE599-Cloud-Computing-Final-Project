@@ -16,7 +16,7 @@ const ResetPassword = ({match}) => {
   useEffect(() => {
       let token = match.params.token
       if(token) {
-          setFormData({...formData, token,})
+          setFormData({...formData, token})
       }
       
   }, [])
