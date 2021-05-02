@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import authSvg from '../assests/reset.svg';
 import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
+import Header from './Header';
+import Footer from './Footer';
+import {isAuth} from '../helpers/auth';
+import {Redirect} from 'react-router-dom';
+
 
 const ResetPassword = ({match}) => {
   const [formData, setFormData] = useState({
@@ -50,54 +54,70 @@ const ResetPassword = ({match}) => {
       toast.error('Passwords don\'t matches');
     }
   };
-  return (
-    <div className='min-h-screen bg-gray-100 text-gray-900 flex justify-center'>
-      <ToastContainer />
-      <div className='max-w-screen-xl m-0 sm:m-20 bg-white shadow sm:rounded-lg flex justify-center flex-1'>
-        <div className='lg:w-1/2 xl:w-5/12 p-6 sm:p-12'>
-          <div className='mt-12 flex flex-col items-center'>
-            <h1 className='text-2xl xl:text-3xl font-extrabold'>
-              Reset Your Password
-            </h1>
-            <div className='w-full flex-1 mt-8 text-indigo-500'>
+
+  const resetPasswordForm = () => {
+    return (
+      <>
+      <div className="container">
+        <div className="row">
+          <div className="card col-10 col-md-8 col-lg-6 p-5 m-auto shadow">
+            <div className="card-body">
+              <h4 className='text-dark text-center mb-3'>
+                Reset Your Password
+              </h4>
+
               
-              <form
-                className='mx-auto max-w-xs relative '
-                onSubmit={handleSubmit}
-              >
-                <input
-                  className='w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white'
+              <form onSubmit={handleSubmit}>
+                <div className="form-label-group shadow-sm rounded">
+                  <input
+                  className="form-control"
                   type='password'
                   placeholder='password'
                   onChange={handleChange('password1')}
                   value={password1}
+                  required autoFocus autoComplete="new-password"
+                  id="inputPassword1" 
                   />
+                  <label htmlFor="inputPassword1">New Password</label>
+                </div>  
+
+                <div className="form-label-group shadow-sm rounded">
                   <input
-                  className='w-full mt-5 px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white'
+                  className="form-control"
                   type='password'
                   placeholder='Confirm password'
                   onChange={handleChange('password2')}
                   value={password2}
+                  required autoComplete="new-password"
+                  id="inputPassword2" 
                 />
+                <label htmlFor="inputPassword2">Confirm Password</label>
+                </div>
+
                 <button
-                  type='submit'
-                  className='mt-5 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none'
-                >
-                  <i className='fas fa-sign-in-alt  w-6  -ml-2' />
+                    type='submit'
+                    className="btn btn-lg btn-block mt-4 text-white mb-3 shadow-sm rounded form-btn" 
+                  >
+                  <i className='fas fa-sign-in-alt' />
                   <span className='ml-3'>{textChange}</span>
                 </button>
               </form>
             </div>
           </div>
         </div>
-        <div className='flex-1 bg-indigo-100 text-center hidden lg:flex'>
-          <div
-            className='m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat'
-            style={{ backgroundImage: `url(${authSvg})` }}
-          ></div>
-        </div>
       </div>
-    </div>
+    </>
+    )
+  }
+
+  return (
+    <>
+      <Header />
+      {isAuth() ? <Redirect to='/dashboard' /> : null}
+      <ToastContainer />
+      {resetPasswordForm()}
+      <Footer />
+    </>
   );
 };
 

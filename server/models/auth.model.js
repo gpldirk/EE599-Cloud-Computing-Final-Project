@@ -27,7 +27,7 @@ const userScheama = new mongoose.Schema(
     },
 
     billingID: String,
-    plan: { type: String, enum: ['none', 'basic_mo', 'pro_mo', 'basic_year', 'pro_year'], default: 'none' },
+    plan: { type: String, enum: ['none', 'Basic Annually', 'Pro Annually', 'Basic Monthly', 'Pro Monthly'], default: 'none' },
     hasTrial: { type: Boolean, default: false },
     endDate: { type: Date, default: null }
 

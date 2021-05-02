@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import {Link} from 'react-router-dom';
-import authSvg from '../assests/update.svg';
+import {Redirect} from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import { updateUser, isAuth, getCookie, signout } from '../helpers/auth';
+import Header from './Header';
+import Footer from './Footer';
 
 const Profile = ({ history }) => {
   const [formData, setFormData] = useState({
@@ -91,79 +92,67 @@ const Profile = ({ history }) => {
       .catch((err) => toast.error(err.response.data.errors))
   };
 
-  return (
-    <div className='min-h-screen bg-gray-100 text-gray-900 flex justify-center'>
-      <ToastContainer />
-      <div className='max-w-screen-xl m-0 sm:m-20 bg-white shadow sm:rounded-lg flex justify-center flex-1'>
-        <div className='lg:w-1/2 xl:w-5/12 p-6 sm:p-12'>
-          <div className='flex flex-col items-center'>
-            
-          <button className="text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg" onClick={manageBilling}>Current Subscription: {plan}</button>
-          
-            <form
-              className='w-full flex-1 mt-4 text-indigo-500'
-              onSubmit={handleSubmit}
-            >
-              <div className='mx-auto max-w-xs relative '>
-    
-                <input
-                  className='w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5'
-                  type='email'
-                  placeholder='Email'
-                  disabled
-                  value={email}
-                />
-                <input
-                  className='w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5'
-                  type='text'
-                  placeholder='Name'
-                  onChange={handleChange('name')}
-                  value={name}
-                />
+  const profileForm = () => {
+    return (
+      <>
+      <div className="container">
+        <div className="row">
+            <div className="card col-10 col-md-8 col-lg-6 p-5 m-auto shadow">
+              <div className="card-body">
+              <h1 className='display-4 text-dark text-center mb-3'>Profile Info</h1>
+                <form onSubmit={handleSubmit}>
+                  <div className="form-label-group shadow-sm rounded">
+                    <input className="form-control"
+                      type='email'
+                      placeholder='Email'
+                      disabled
+                      value={email}
+                    />
+                  </div>   
 
-                <input
-                  className='w-full px-8 py-4 rounded-lg font-medium bg-gray-100 border border-gray-200 placeholder-gray-500 text-sm focus:outline-none focus:border-gray-400 focus:bg-white mt-5'
-                  type='password'
-                  placeholder='Password'
-                  onChange={handleChange('password')}
-                  value={password}
-                />
+                  <div className="form-label-group shadow-sm rounded">
+                    <input className="form-control"
+                      type='text'
+                      placeholder='Name'
+                      onChange={handleChange('name')}
+                      value={name}
+                    />
+                  </div>  
+
+                  <div className="form-label-group shadow-sm rounded">
+                    <input className="form-control"
+                      type='password'
+                      placeholder='Password'
+                      onChange={handleChange('password')}
+                      value={password}
+                    />
+                  </div>  
+
                 <button
                   type='submit'
-                  className='mt-5 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none'
+                  className="btn btn-lg btn-block mt-4 text-white mb-3 shadow-sm rounded form-btn" 
                 >
-                  <i className='fas fa-user-plus fa 1x w-6  -ml-2' />
+                  <i className='fas fa-user-edit' />
                   <span className='ml-3'>{textChange}</span>
                 </button>
-              </div>
-              <div className='my-6 border-b text-center'>
-                <div className='leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2'>
-                  Go To Home
-                </div>
-              </div>
-              <div className='flex flex-col items-center'>
-                <Link
-                  className='w-full max-w-xs font-bold shadow-sm rounded-lg py-3
-           bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline mt-5'
-                  to='/'
-                  target='_self'
-                >
-                  <i className='fas fa-sign-in-alt fa 1x w-6  -ml-2 text-indigo-500' />
-                  <span className='ml-4'>Home</span>
-                </Link>
-              </div>
             </form>
-          </div>
-        </div>
-        <div className='flex-1 bg-indigo-100 text-center hidden lg:flex'>
-          <div
-            className='m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat'
-            style={{ backgroundImage: `url(${authSvg})` }}
-          ></div>
+            <button className="btn btn-lg btn-block mt-4 text-white mb-3 shadow-sm rounded form-btn" onClick={manageBilling}>Current Subscription: {plan}</button>
         </div>
       </div>
-      
-    </div>
+     </div> 
+     </div>
+     </>
+    )
+  }
+
+  return (
+    <>
+      <Header />
+      {!isAuth() ? <Redirect to='/login' /> : null}
+      <ToastContainer />
+      {profileForm()}
+      <Footer />
+    </>
   );
 };
 

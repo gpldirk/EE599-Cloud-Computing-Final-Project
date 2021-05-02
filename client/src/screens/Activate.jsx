@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import authSvg from '../assests/welcome.svg';
 import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
 import { isAuth } from '../helpers/auth';
 import { Redirect, Link } from 'react-router-dom';
+import Header from './Header';
+import Footer from './Footer';
 
 const Activate = ({ match }) => {
   const [formData, setFormData] = useState({
@@ -46,71 +47,50 @@ const Activate = ({ match }) => {
       });
   };
 
-  return (
-    <div className='min-h-screen bg-gray-100 text-gray-900 flex justify-center'>
-      {isAuth() ? <Redirect to='/' /> : null}
-      <ToastContainer />
-      <div className='max-w-screen-xl m-0 sm:m-20 bg-white shadow sm:rounded-lg flex justify-center flex-1'>
-        <div className='lg:w-1/2 xl:w-5/12 p-6 sm:p-12'>
-          <div className='mt-12 flex flex-col items-center'>
-            <h1 className='text-2xl xl:text-3xl font-extrabold'>
-              Welcome {name}
-            </h1>
+  const activateForm = () => {
+    return (
+      <div className="container">
+        <div className="row">
+          <div className="card col-10 col-md-8 col-lg-6 p-5 m-auto shadow">
+            <div className="card-body">
+              <h3 className='text-dark text-center mb-3'>
+                Welcome {name}
+              </h3>
 
-            <form
-              className='w-full flex-1 mt-8 text-indigo-500'
-              onSubmit={handleSubmit}
-            >
-              <div className='mx-auto max-w-xs relative '>
+            <form onSubmit={handleSubmit}>
+              <div className="form-label-group shadow-sm rounded">
                 <button
                   type='submit'
-                  className='mt-5 tracking-wide font-semibold bg-indigo-500 text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none'
+                  className="btn btn-lg btn-block mt-4 text-white mb-3 shadow-sm rounded form-btn" 
                 >
-                  <i className='fas fa-user-plus fa 1x w-6  -ml-2' />
+                  <i className='fas fa-hand-point-right' />
                   <span className='ml-3'>Activate your Account</span>
                 </button>
               </div>
 
-              <div className='my-12 border-b text-center'>
-                <div className='leading-none px-2 inline-block text-sm text-gray-600 tracking-wide font-medium bg-white transform translate-y-1/2'>
-                </div>
-              </div>
 
-              <div className='flex flex-col items-center'>
-                <Link
-                  className='w-full max-w-xs font-bold shadow-sm rounded-lg py-3
-           bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline mt-5'
-                  to='/register'
-                  target='_self'
-                >
-                  <i className='fas fa-sign-in-alt fa 1x w-6  -ml-2 text-indigo-500' />
-                  <span className='ml-4'>Sign Up</span>
-                </Link>
-              </div>
+              <Link className="btn btn-lg btn-block mt-4 text-white mb-3 shadow-sm rounded form-btn" to='/signup'><i className='fas fa-user-plus' />
+                  <span className='ml-4'>Sign Up</span></Link>
 
-              <div className='flex flex-col items-center'>
-                <Link
-                  className='w-full max-w-xs font-bold shadow-sm rounded-lg py-3
-           bg-indigo-100 text-gray-800 flex items-center justify-center transition-all duration-300 ease-in-out focus:outline-none hover:shadow focus:shadow-sm focus:shadow-outline mt-5'
-                  to='/login'
-                  target='_self'
-                >
-                  <i className='fas fa-sign-in-alt fa 1x w-6  -ml-2 text-indigo-500' />
-                  <span className='ml-4'>Sign In</span>
-                </Link>
-              </div>
+              <Link className="btn btn-lg btn-block mt-4 text-white mb-3 shadow-sm rounded form-btn" to='/login'><i className='fas fa-sign-in-alt' />
+              <span className='ml-4'>Sign In</span></Link>
             </form>
           </div>
         </div>
-        <div className='flex-1 bg-indigo-100 text-center hidden lg:flex'>
-          <div
-            className='m-12 xl:m-16 w-full bg-contain bg-center bg-no-repeat'
-            style={{ backgroundImage: `url(${authSvg})` }}
-          ></div>
-        </div>
+        
       </div>
-      
     </div>
+    )
+  }
+
+  return (
+    <>
+      <Header />
+      {isAuth() ? <Redirect to='/dashboard' /> : null}
+      <ToastContainer />
+      {activateForm()}
+      <Footer />
+    </>
   );
 };
 

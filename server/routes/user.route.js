@@ -9,7 +9,7 @@ const { checkoutController, billingController } = require('../controllers/stripe
 router.get('/user/:id', requireSignin, readController);
 router.put('/user/update', requireSignin, updateController);
 
-router.post('/checkout', requireSignin, checkoutController)
-router.post('/billing', requireSignin, billingController)
+router.post('/checkout', requireSignin, checkoutController);
+router.post('/billing', requireSignin, billingController);
 
 module.exports = router;

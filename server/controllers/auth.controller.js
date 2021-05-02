@@ -25,7 +25,7 @@ exports.registerController = (req, res) => {
     }).exec((err, user) => {
       if (user) {
         return res.status(400).json({
-          errors: 'Email is taken'
+          errors: 'Email has been taken'
         });
       }
     });
@@ -45,7 +45,7 @@ exports.registerController = (req, res) => {
     const emailData = {
       from: process.env.EMAIL_FROM,
       to: email, 
-      subject: "TinyURL ACCOUNT ACTIVATION LINK",
+      subject: "Surl ACCOUNT ACTIVATION LINK",
       html: `
                 <h1>Please use the following link to activate your account</h1>
                 <p>${process.env.CLIENT_URL}/auth/activate/${token}</p>
@@ -67,7 +67,7 @@ exports.activationController = (req, res) => {
       if (err) {
         console.log('Activation error');
         return res.status(401).json({
-          errors: 'Expired link. Signup again'
+          errors: 'Link expired. Please signup again'
         });
       } else {
         const { name, email, password } = jwt.decode(token);
@@ -94,7 +94,7 @@ exports.activationController = (req, res) => {
             return res.json({
               success: true,
               message: user,
-              message: 'Signup success'
+              message: 'Signup success. Please signin'
             });
           }
         });
@@ -122,7 +122,7 @@ exports.signinController = (req, res) => {
     }).exec((err, user) => {
       if (err || !user) {
         return res.status(400).json({
-          errors: 'User with that email does not exist. Please signup'
+          errors: 'The email does not exist. Please signup'
         });
       }
       // authenticate
@@ -185,7 +185,7 @@ exports.forgotPasswordController = (req, res) => {
       (err, user) => {
         if (err || !user) {
           return res.status(400).json({
-            error: 'User with that email does not exist'
+            error: 'The email does not exist'
           });
         }
 
@@ -251,7 +251,7 @@ exports.resetPasswordController = (req, res) => {
       ) {
         if (err) {
           return res.status(400).json({
-            error: 'Expired link. Try again'
+            error: 'Link expired. Please try again'
           });
         }
 
