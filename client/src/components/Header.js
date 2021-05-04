@@ -32,7 +32,7 @@ const Header = () => {
 {/* nav item 2 */}
 
                             <li className="nav-item dropdown  ml-2 mr-2">
-                                <Link to="/" style={{ textDecoration: 'none' }}>
+                                <Link to="/features" style={{ textDecoration: 'none' }}>
                                     <span className="nav-link">Features</span>
                                 </Link>
                             </li>
@@ -41,6 +41,14 @@ const Header = () => {
                             <li className="nav-item dropdown  ml-2 mr-2">
                                 <Link className="link" to="/subscription" style={{ textDecoration: 'none' }}>
                                     <span className="nav-link">Pricing</span>
+                                </Link>
+                                <div className="underline"></div>
+                            </li>
+
+
+                            <li className="nav-item dropdown  ml-2 mr-2">
+                                <Link className="link" to="/team" style={{ textDecoration: 'none' }}>
+                                    <span className="nav-link">Team</span>
                                 </Link>
                                 <div className="underline"></div>
                             </li>

@@ -69,12 +69,12 @@ const Profile = ({ history }) => {
       .then(res => {
         updateUser(res, () => {
           toast.success('Profile Updated Successfully');
-          setFormData({ ...formData, textChange: 'Update' });
         });
       })
       .catch(err => {
-        console.log(err.response);
+        toast.error(err.response.data.error);
       });
+      setFormData({ ...formData, textChange: 'Submited' });
   };
 
   const manageBilling = () => {

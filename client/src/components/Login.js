@@ -14,13 +14,18 @@ const Login = ({ history }) => {
   const [formData, setFormData] = useState({
     email: '',
     password: '',
+    remember: false,
     textChange: 'Sign In'
   });
 
-  const { email, password, textChange } = formData;
+  const { email, password, textChange, remember } = formData;
   const handleChange = text => e => {
     setFormData({ ...formData, [text]: e.target.value });
   };
+  const handleCheck = () => {
+    console.log(remember)
+    setFormData({ ...formData,  remember: !remember});
+  }
 
   const sendGoogleToken = tokenId => {
     axios
@@ -36,7 +41,7 @@ const Login = ({ history }) => {
       });
   };
   const informParent = response => {
-    authenticate(response, () => {
+    authenticate(response, remember, () => {
       isAuth() ? history.push('/')
         : history.push('/signin');
     });
@@ -75,10 +80,10 @@ const Login = ({ history }) => {
       axios
         .post(`${process.env.REACT_APP_API_URL}/login`, {
           email,
-          password: password
+          password
         })
         .then(res => {
-          authenticate(res, () => {
+          authenticate(res, remember, () => {
             setFormData({
               ...formData,
               email: '',
@@ -137,13 +142,12 @@ const Login = ({ history }) => {
                           onClick={renderProps.onClick} 
                           align="center"
                         >
-                          
                         </FacebookLoginButton>
                       )}
                     />
                 
                 <div>
-                    <hr class="hr-text" data-content="Or Sign In with email and password"></hr>
+                    <hr className="hr-text" data-content="Or Sign In with email and password"></hr>
                 </div>
                 
                 <form
@@ -178,8 +182,8 @@ const Login = ({ history }) => {
 
                   <div className="form-group">
                     <div className="custom-control custom-checkbox">
-                      <input type="checkbox" class="custom-control-input" id="customControlInline" />
-                      <label class="custom-control-label" for="customControlInline">Remember me</label>
+                      <input type="checkbox" className="custom-control-input" id="customControlInline" onClick={() => handleCheck()}/>
+                      <label className="custom-control-label" htmlFor="customControlInline">Remember me</label>
                     </div>
                   </div>
 
@@ -191,12 +195,12 @@ const Login = ({ history }) => {
                     <span className='ml-3'>{textChange}</span>
                   </button>
 
-                  <div class="mt-4">
-                    <div class="d-flex justify-content-center links">
+                  <div className="mt-4">
+                    <div className="d-flex justify-content-center links">
                       Don't have an account? <Link to='/signup' className="ml-2">Sign Up</Link>
                     </div>
 
-                    <div class="d-flex justify-content-center links">
+                    <div className="d-flex justify-content-center links">
                         <Link to='/users/password/forget'>
                         Forget password?
                       </Link>

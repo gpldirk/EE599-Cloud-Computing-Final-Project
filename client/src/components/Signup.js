@@ -135,12 +135,12 @@ const Signup = () => {
                     <span className='ml-3'>{textChange}</span>
                   </button>
 
-                  <div class="mt-4">
-                    <div class="d-flex justify-content-center links">
+                  <div className="mt-4">
+                    <div className="d-flex justify-content-center links">
                       Already have an account? <Link to='/login' className="ml-2">Sign In</Link>
                     </div>
 
-                    <div class="d-flex justify-content-center links">
+                    <div className="d-flex justify-content-center links">
                         <Link to='/login'>
                           Social Login
                       </Link>

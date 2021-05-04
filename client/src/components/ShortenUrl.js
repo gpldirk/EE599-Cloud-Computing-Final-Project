@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { shortenUrl } from '../helpers/auth'
 
 const ShortenUrl = () => {
 

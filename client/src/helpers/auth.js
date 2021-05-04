@@ -27,7 +27,7 @@ export const getCookie = key => {
     }
 };
 
-// Set user info in localstorage
+// Set user info in localstorage, keep it for 7 days
 export const setLocalStorage = (key, value) => {
     if (window !== 'undefined') {
         localStorage.setItem(key, JSON.stringify(value));
@@ -41,11 +41,24 @@ export const removeLocalStorage = key => {
     }
 };
 
+// Set user info in sessionStorage, keep it for only connection
+export const setSessionStorage = (key, value) => {
+    if (window !== 'undefined') {
+        sessionStorage.setItem(key, JSON.stringify(value));
+    }
+};
+
+
 // Set cookie and localstorage during signin
-export const authenticate = (response, next) => {
-    console.log('AUTHENTICATE HELPER ON SIGNIN', response);
+export const authenticate = (response, remember, next) => {
+    console.log('AUTHENTICATE HELPER ON SIGNIN', response, remember);
     setCookie('token', response.data.token);
-    setLocalStorage('user', response.data.user);
+    if (remember) {
+        setLocalStorage('user', response.data.user);
+    } else {
+        setSessionStorage('user', response.data.user);
+    }
+
     next();
 };
 
@@ -57,6 +70,8 @@ export const isAuth = () => {
         if (cookieChecked) {
             if (localStorage.getItem('user')) {
                 return JSON.parse(localStorage.getItem('user'));
+            } else if (sessionStorage.getItem('user')) {
+                return JSON.parse(sessionStorage.getItem('user'));
             } else {
                 return false;
             }
@@ -75,9 +90,15 @@ export const signout = next => {
 export const updateUser = (response, next) => {
     console.log('UPDATE USER IN LOCALSTORAGE', response);
     if (typeof window !== 'undefined') {
-        let auth = JSON.parse(localStorage.getItem('user'));
-        auth = response.data;
-        localStorage.setItem('user', JSON.stringify(auth));
+        if (localStorage.getItem('user')) {
+            let auth = JSON.parse(localStorage.getItem('user'));
+            auth = response.data;
+            localStorage.setItem('user', JSON.stringify(auth));
+        } else {
+            let auth = JSON.parse(sessionStorage.getItem('user'));
+            auth = response.data;
+            sessionStorage.setItem('user', JSON.stringify(auth));
+        }
     }
     next();
 };

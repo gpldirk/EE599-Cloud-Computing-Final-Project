@@ -26,20 +26,21 @@ const ForgetPassword = ({history}) => {
           email
         })
         .then(res => {
-            setFormData({
-              ...formData,
-              email: '',
-            });
-            toast.success(`Please check your email`);
+          setFormData({
+            ...formData,
+            email: '',
+          });
           
+          toast.success(`Please check your email`);
         })
         .catch(err => {
-        console.log(err.response)
           toast.error(err.response.data.error);
         });
     } else {
       toast.error('Please fill all fields');
     }
+
+    setFormData({ ...formData, textChange: 'Submitted' });
   };
 
   const ForgetPasswordForm = () => {

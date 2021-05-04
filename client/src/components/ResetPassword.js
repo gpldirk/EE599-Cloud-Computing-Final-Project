@@ -27,32 +27,35 @@ const ResetPassword = ({match}) => {
   const handleChange = text => e => {
     setFormData({ ...formData, [text]: e.target.value });
   };
-    const handleSubmit = e => {
-      console.log(password1, password2)
+
+  const handleSubmit = e => {
+    console.log(password1, password2)
     e.preventDefault();
     if ((password1 === password2) && password1 && password2) {
       setFormData({ ...formData, textChange: 'Submitting' });
       axios
         .put(`${process.env.REACT_APP_API_URL}/resetpassword`, {
             newPassword: password1,
-            resetPasswordLink: token
+            resetPasswordLink: token,
         })
         .then(res => {
-          console.log(res.data.message)
-            setFormData({
-              ...formData,
-               password1: '',
-              password2: ''
-            });
-            toast.success(res.data.message);
-          
+          setFormData({
+            ...formData,
+              password1: '',
+            password2: ''
+          });
+
+          toast.success(res.data.message);
         })
         .catch(err => {
-          toast.error('Something is wrong try again');
+          console.log(err)
+          toast.error(err.response.data.error);
         });
     } else {
       toast.error('Passwords don\'t matches');
     }
+
+    setFormData({ ...formData, textChange: 'Submitted' });
   };
 
   const resetPasswordForm = () => {
