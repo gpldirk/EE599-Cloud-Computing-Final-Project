@@ -3,6 +3,7 @@ var Schema = mongoose.Schema;
 
 // shortURL request record
 var RequestSchema = new Schema({
+    userId: String, 
     shortUrl: String,
     referer: String,
     platform: String,

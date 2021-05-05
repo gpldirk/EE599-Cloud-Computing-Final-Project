@@ -10,7 +10,7 @@ exports.getShortUrlController = (req, res) => {
     if (url) {
       res.json(url);
     } else {
-      res.status(404).send("Short URL Not Found!");
+      res.status(404).send("Short URL Found Error!");
     }
   });
 }

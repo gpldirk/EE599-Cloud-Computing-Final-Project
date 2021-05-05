@@ -1,4 +1,5 @@
 var UrlModel = require("../models/url.model");
+var User = require("../models/auth.model");
 var lexicon = require("emoji-lexicon");
 
 var redis = require("redis");
@@ -24,7 +25,7 @@ encode = encode.concat(genCharArray("0", "9"));
 
 // generate shortURL and save to redis and db
 var getShortUrl = function (userId, longUrl, callback) {
-    console.log(longUrl);
+    console.log(longUrl, userId);
     if (longUrl.indexOf("http") === -1) {
         longUrl = "http://" + longUrl;
     }
@@ -50,7 +51,7 @@ var getShortUrl = function (userId, longUrl, callback) {
                 } else {
                     
                     // if no longUrl match, generate shortUrl, save to db and cache
-                    generateShortUrl(function (shortUrl) {
+                    generateShortUrl(userId, function (shortUrl) {
                         var url = new UrlModel({
                             shortUrl: shortUrl,
                             longUrl: longUrl,
@@ -71,18 +72,47 @@ var getShortUrl = function (userId, longUrl, callback) {
 };
 
 // get emoji shortURL
-var generateShortUrl = function (callback) {
-    callback(convertToEmoji());
+var generateShortUrl = function (userId, callback) {
+    if (userId === "") {
+        callback(convertToChar());
+    } else {
+        // check if user has plan and not at end phrase
+        User.findById(userId, (err, user) => {
+            if (user.plan == 'none' || user.endDate == null || user.endDate < new Date().toISOString()) {
+                callback(convertToChar());
+            } else {
+                callback(convertToEmoji());
+            }
+        })
+    }
 };
 
-// randomly generate shortURL
+// randomly generate shortURL using emoji
 var convertToEmoji = function () {
     do {
         var result = "";
         for (var x = 0; x < 6; x++) {
             result += lexicon[Math.floor(Math.random() * lexicon.length)];
         }
+
+        // UrlModel.findOne({shortUrl: result}, (err, data) => {
+        //     if (data) {
+
+        //     } else {}
+        // })
     } while (false);
+
+    return result;
+};
+
+// randomly generate shortURL using 62 characters
+var convertToChar = function () {
+    do {
+        var result = "";
+        for (var x = 0; x < 6; x++) {
+            result += encode[Math.floor(Math.random() * encode.length)];
+        }
+    } while (false); 
 
     return result;
 };

@@ -14,7 +14,7 @@ router.post("/urls", getShortUrlController);
 router.get("/urls/:shortUrl", getLongUrlController);
 
 // get shortURL request info
-router.get("/urls/:shortUrl/:info", getRequestInfoController); /// signin test
+router.get("/urls/:shortUrl/:info", requireSignin, getRequestInfoController); /// signin test
 
 // get url records table for user
 router.get("/myUrls", requireSignin, getMyUrlsController);
