@@ -110,6 +110,7 @@ exports.activationController = (req, res) => {
 exports.signinController = (req, res) => {
   const { email, password } = req.body;
   const errors = validationResult(req);
+
   if (!errors.isEmpty()) {
     const firstError = errors.array().map(error => error.msg)[0];
     return res.status(422).json({
@@ -235,13 +236,12 @@ exports.forgotPasswordController = (req, res) => {
 
 exports.resetPasswordController = (req, res) => {
   const { resetPasswordLink, newPassword } = req.body;
-
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
     const firstError = errors.array().map(error => error.msg)[0];
     return res.status(422).json({
-      errors: firstError
+      error: firstError
     });
   } else {
     if (resetPasswordLink) {
@@ -294,9 +294,14 @@ const client = new OAuth2Client(process.env.GOOGLE_CLIENT);
 // Google Login
 exports.googleController = (req, res) => {
   const { idToken } = req.body;
+  if (!idToken) {
+    return res.status(400).json({
+      error: 'User signup failed with google'
+    });
+  }
 
   client
-    .verifyIdToken({ idToken, audience: process.env.GOOGLE_CLIENT })
+    .verifyIdToken({ idToken, audience: process.env.GOOGLE_CLIENT})
     .then(response => {
       // console.log('GOOGLE LOGIN RESPONSE',response)
       const { email_verified, name, email } = response.payload;
@@ -357,7 +362,7 @@ exports.googleController = (req, res) => {
           error: 'Google login failed. Try again'
         });
       }
-    });
+    })
 };
 
 exports.facebookController = (req, res) => {

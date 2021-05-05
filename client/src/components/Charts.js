@@ -46,7 +46,7 @@ const Charts = () => {
       .then(res => {
 
         const {shortUrl, longUrl} = res.data;
-        setData({shortUrl, longUrl});
+        setData(prev => ({...prev, shortUrl, longUrl}));
       })
       .catch(err => {
         console.log(err);
@@ -57,12 +57,13 @@ const Charts = () => {
     axios
       .get(`${process.env.REACT_APP_API_URL}/urls/${url}/totalClicks`)
       .then(res => {
-        setData({...data, totalClicks: res.data})
+        setData(prev => ({...prev, totalClicks: res.data}))
       })
       .catch(err => {
         console.log(err);
         toast.error('Load Info Error');
       })
+
   }
   const getTime = (time) => {
     var tmpData = {
@@ -94,7 +95,7 @@ const Charts = () => {
           tmpData.datasets[0].data.push(item.count);
         });
 
-        setData({...data, lineData: tmpData})
+        setData(prev => ({...prev, lineData: tmpData}))
       })
   }
   const renderChart = (chart, infos) => {
@@ -121,8 +122,11 @@ const Charts = () => {
             scale: d3.interpolateRainbow,
             dataLabel: infos,
           });
-
-          setData({doughnutData: temp})
+          
+          setData(prev => ({
+            ...prev,
+            doughnutData: temp
+          }))
         } else if (chart === 'pie') {
           const temp = chartData({
             labels: labels,
@@ -135,8 +139,10 @@ const Charts = () => {
             scale: d3.interpolateCool,
             dataLabel: infos,
           });
-
-          setData({pieData: temp})
+          setData(prev => ({
+            ...prev,
+            pieData: temp
+          }))
         } else if (chart === 'base') {
           const temp = chartData({
             labels: labels,
@@ -150,7 +156,10 @@ const Charts = () => {
             dataLabel: infos,
           });
 
-          setData({baseData: temp})
+          setData(prev => ({
+            ...prev,
+            baseData: temp
+          }))
         } else if (chart === 'bar') {
           const temp = chartData({
             labels: labels,
@@ -164,19 +173,22 @@ const Charts = () => {
             dataLabel: infos,
           });
 
-          setData({barData: temp})
+          setData(prev => ({
+            ...prev,
+            barData: temp
+          }))
         }
       })
       .catch(err => {
         console.log(err);
         toast.error('Load Info Error');
       })
-    
+
   }
 
   const loadInfo = () => {
-    // getTotalClicks();
-    // getTime(lineData.datasets[0].label);
+    getTotalClicks();
+    getTime(lineData.datasets[0].label);
     renderChart("doughnut", "referer");
     renderChart("pie", "country");
     renderChart("base", "platform");
@@ -184,7 +196,7 @@ const Charts = () => {
   }
   // listen for register event to initialize state
   useEffect(() => {
-    // getUrls();
+    getUrls();
     loadInfo();
     socket.emit('registerShortUrl', url);  
   }, []);
@@ -195,7 +207,6 @@ const Charts = () => {
   });
 
   const chartForm = () => {
-    
     return (
       <div className="container">
         <div className="row">
@@ -303,6 +314,8 @@ const Charts = () => {
       </div>
     )
   }
+
+  console.log(data)
 
   return (
     <>

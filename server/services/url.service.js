@@ -1,15 +1,9 @@
-
 var UrlModel = require("../models/url.model");
-var redis = require("redis");
 var lexicon = require("emoji-lexicon");
 
-// need modify using redis
-var lruMap = require("../services/lruMap");
-var cachedMap = require("../services/cachedMap");
-
+var redis = require("redis");
 var host = process.env.REDIS_PORT_6379_TCP_ADDR;
 var port = process.env.REDIS_PORT_6379_TCP_PORT;
-
 var redisClient = redis.createClient(port, host);
 
 var encode = [];
@@ -29,41 +23,45 @@ encode = encode.concat(genCharArray("a", "z"));
 encode = encode.concat(genCharArray("0", "9"));
 
 // generate shortURL and save to redis and db
-var getShortUrl = function (username, longUrl, callback) {
+var getShortUrl = function (userId, longUrl, callback) {
+    console.log(longUrl);
     if (longUrl.indexOf("http") === -1) {
         longUrl = "http://" + longUrl;
     }
 
-    redisClient.get(username + ":" + longUrl, function (err, shortUrl) {
+    redisClient.get(userId + ":" + longUrl, function (err, shortUrl) {
         // if longUrl in redis
         if (shortUrl) {
             console.log("Byebye mongo!");
             callback({
                 shortUrl: shortUrl,
                 longUrl: longUrl,
-                username: username
+                userId: userId
             });
         } else {
-            UrlModel.findOne({username: username, longUrl: longUrl}, function (err, data) {
+            
+            UrlModel.findOne({userId: userId, longUrl: longUrl}, function (err, data) {
                 // if longUrl in db
                 if (data) {
                     callback(data);
                     // save to redis
                     redisClient.set(data.shortUrl, data.longUrl);
-                    redisClient.set(username + ":" + data.longUrl, data.shortUrl);
+                    redisClient.set(userId + ":" + data.longUrl, data.shortUrl);
                 } else {
+                    
                     // if no longUrl match, generate shortUrl, save to db and cache
                     generateShortUrl(function (shortUrl) {
                         var url = new UrlModel({
                             shortUrl: shortUrl,
                             longUrl: longUrl,
-                            username: username,
+                            userId: userId,
                             creationTime: new Date()
                         });
+                        console.log(url);
                         // save to db and redis
                         url.save();
                         redisClient.set(shortUrl, longUrl);
-                        redisClient.set(username + ":" + longUrl, shortUrl);
+                        redisClient.set(userId + ":" + longUrl, shortUrl);
                         callback(url);
                     });
                 }
@@ -75,7 +73,6 @@ var getShortUrl = function (username, longUrl, callback) {
 // get emoji shortURL
 var generateShortUrl = function (callback) {
     callback(convertToEmoji());
-
 };
 
 // randomly generate shortURL
@@ -85,40 +82,41 @@ var convertToEmoji = function () {
         for (var x = 0; x < 6; x++) {
             result += lexicon[Math.floor(Math.random() * lexicon.length)];
         }
-    } while (cachedMap.map.has(result)); // ???
+    } while (false);
 
     return result;
-
 };
 
 // get longURL from LRU or db
 var getLongUrl = function (shortUrl, callback) {
     console.log("need a longUrl from shortUrl " + shortUrl);
-    // if longUrl in LRU
-    var longUrlNode = lruMap.LRUCacheGet(shortUrl);
-    if (longUrlNode != 'undefined') {
-        console.log('Url is cached in LRU');
-        console.log('short Url is  ' + longUrlNode.key + "long Url is " + longUrlNode.value);
-        callback({
-            shortUrl: longUrlNode.key,
-            longUrl: longUrlNode.value
-        });
-    } else {
-        // if longUrl in db
-        console.log('Mongo is called');
-        UrlModel.findOne({shortUrl: shortUrl}, function (err, data) {
-            callback(data);
-            if (data) {
-                // save to LRU
-                lruMap.LRUCacheSet(data.shortUrl, data.longUrl);
-            }
-        });
-    }
+
+    redisClient.get(shortUrl, function (err, longUrl) {
+        // if shortUrl in redis
+        if (shortUrl) {
+            console.log("Byebye mongo!");
+            callback({
+                shortUrl: shortUrl,
+                longUrl: longUrl,
+            });
+
+        } else {
+            // if shortUrl in db
+            console.log('Mongo is called');
+            UrlModel.findOne({shortUrl: shortUrl}, function (err, data) {
+                callback(data);
+                if (data) {
+                    // save to redis
+                    redisClient.set(shortUrl, longUrl);
+                }
+            });
+        }
+    })
 };
 
 // get all url for user
-var getMyUrls = function (username, callback) {
-    UrlModel.find({username: username}, function (err, urls) {
+var getMyUrls = function (userId, callback) {
+    UrlModel.find({ userId: userId}, function (err, urls) {
         callback(urls);
     });
 };

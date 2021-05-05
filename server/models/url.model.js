@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 var UrlSchema = new Schema({
     shortUrl: String,
     longUrl: String,
-    username: String,
+    userId: String,  // change username to userId
     creationTime: Date
 });
 
