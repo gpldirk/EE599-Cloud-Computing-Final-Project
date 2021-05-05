@@ -19,8 +19,8 @@ import Dashboard from '../src/components/Dashboard';
 ReactDOM.render(
   <BrowserRouter>
     <Switch>
-      <Route path='/urls/:url' exact render={props => <Charts {...props} />} />
-      <Route path='/dashboard' exact render={props => <Dashboard {...props} />} />
+      <PrivateRoute path='/urls/:url' exact component={Charts}/>
+      <PrivateRoute path='/dashboard' exact component={Dashboard}/>
       
       <Route path='/' exact render={props => <Home {...props} />} />
       <Route path='/home' exact render={props => <Home {...props} />} />

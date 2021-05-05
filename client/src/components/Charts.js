@@ -1,35 +1,27 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
-import { useParams} from 'react-router-dom';
+import { Redirect, useParams} from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import Header from './Header';
 import Footer from './Footer';
-import { isAuth } from '../helpers/auth';
-import { Line, Bar, Pie, Doughnut, PolarArea} from 'react-chartjs-2';
+import { getCookie, isAuth } from '../helpers/auth';
+import { Bar, Pie, Doughnut, PolarArea } from 'react-chartjs-2';
 import io from 'socket.io-client';
 
 import { chartData } from "./chartData";
+import TimeTable from './TimeTable';
 import * as d3 from "d3-scale-chromatic";
 
-const socket = io('http://localhost:5000', {
+const socket = io(`${process.env.REACT_APP_API_DOMAIN}`, {
   transports: ['websocket', 'polling']
 });
 
 
-// https://stackoverflow.com/questions/38529553/multiple-axios-requests-into-reactjs-state
 const Charts = () => {  
   const [data, setData] = useState({
     longUrl: "",
     shortUrl: "",
     totalClicks: 0,
-    
-    lineData: {
-      labels: [],
-      datasets: [{
-        label: "hour",
-        data: [],
-      }]
-    },
 
     doughnutData: {},
     pieData: {},
@@ -37,12 +29,17 @@ const Charts = () => {
     barData: {},
   })
 
-  const {longUrl, shortUrl, totalClicks, lineData, doughnutData,pieData,baseData,barData} = data;
+  const {longUrl, shortUrl, totalClicks, doughnutData, pieData, baseData, barData} = data;
   const { url } = useParams();
+  const {token} = getCookie();
 
   const getUrls = () => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}/urls/${url}`)
+      .get(`${process.env.REACT_APP_API_URL}/urls/${url}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
       .then(res => {
 
         const {shortUrl, longUrl} = res.data;
@@ -55,7 +52,11 @@ const Charts = () => {
   }
   const getTotalClicks = () => {
     axios
-      .get(`${process.env.REACT_APP_API_URL}/urls/${url}/totalClicks`)
+      .get(`${process.env.REACT_APP_API_URL}/urls/${url}/totalClicks`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
       .then(res => {
         setData(prev => ({...prev, totalClicks: res.data}))
       })
@@ -63,47 +64,18 @@ const Charts = () => {
         console.log(err);
         toast.error('Load Info Error');
       })
-
   }
-  const getTime = (time) => {
-    var tmpData = {
-      labels: [],
-      datasets: [{
-        label: time,
-        data: [],
-      }]
-    }
 
-    axios
-      .get(`${process.env.REACT_APP_API_URL}/urls/${url}/${time}`)
-      .then(res => {
-        res.data.forEach(function (item) {
-          var legend = "";
-          if (time === "hour") {
-              if (item._id.minutes < 10) {
-                  item._id.minutes = "0" + item._id.minutes;
-              }
-              legend = item._id.hour + ":" + item._id.minutes;
-          }
-          if (time === "day") {
-              legend = item._id.hour + ":00";
-          }
-          if (time === "month") {
-              legend = item._id.month + "/" + item._id.day;
-          }
-          tmpData.labels.push(legend);
-          tmpData.datasets[0].data.push(item.count);
-        });
-
-        setData(prev => ({...prev, lineData: tmpData}))
-      })
-  }
   const renderChart = (chart, infos) => {
     var data = [];
     var labels = []
 
     axios
-      .get(`${process.env.REACT_APP_API_URL}/urls/${url}/${infos}`)
+      .get(`${process.env.REACT_APP_API_URL}/urls/${url}/${infos}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
       .then(res => {
         res.data.forEach(function (info) {
           data.push(info.count)
@@ -136,7 +108,7 @@ const Charts = () => {
               colorEnd: 1,
               useEndAsStart: true,
             },
-            scale: d3.interpolateCool,
+            scale: d3.interpolateSinebow,
             dataLabel: infos,
           });
           setData(prev => ({
@@ -152,7 +124,7 @@ const Charts = () => {
               colorEnd: 1,
               useEndAsStart: true,
             },
-            scale: d3.interpolateRdYlBu,
+            scale: d3.interpolateOranges,
             dataLabel: infos,
           });
 
@@ -169,7 +141,7 @@ const Charts = () => {
               colorEnd: 1,
               useEndAsStart: true,
             },
-            scale: d3.interpolateSpectral,
+            scale: d3.interpolateTurbo,
             dataLabel: infos,
           });
 
@@ -188,7 +160,6 @@ const Charts = () => {
 
   const loadInfo = () => {
     getTotalClicks();
-    getTime(lineData.datasets[0].label);
     renderChart("doughnut", "referer");
     renderChart("pie", "country");
     renderChart("base", "platform");
@@ -210,16 +181,18 @@ const Charts = () => {
     return (
       <div className="container">
         <div className="row">
+          <div className="col-md-2"></div>
           <div className="col-md-5 col-md-offset-2">
             <div className="row">
-              <h4> Your Long URL is: </h4>
+              <h6>Long URL: </h6>
               <a href={longUrl} target="_blank" rel="noopener noreferrer">{longUrl}</a>
             </div>
 
             <div className="row">
-                <h4> Your TinyURL is: </h4>
-                <a href={`http://localhost:5000/${shortUrl}`} target="_blank" rel="noopener noreferrer">{`http://localhost:5000/${shortUrl}`}</a>
+                <h6>TinyURL: </h6>
+                <a href={`${process.env.REACT_APP_API_DOMAIN}/${shortUrl}`} target="_blank" rel="noopener noreferrer">{`${process.env.REACT_APP_API_DOMAIN}/${shortUrl}`}</a>
             </div>
+
           </div>
 
           <div className="col-md-3">
@@ -231,32 +204,7 @@ const Charts = () => {
         </div>
 
 
-        <div className="row">
-          <div className="col-md-8 col-md-offset-2">
-            <div className="card">
-              {/* <div className="card-header">
-                Clicks for the past: 
-                        <a href="#" onClick={(e) => {
-                            e.preventDefault();
-                            getTime('hour')
-                          }} className={ lineData.datasets[0].label === 'hour' ? null: 'text-muted' }> Hour </a>
-                        <a href="#" onClick={(e) => {
-                          e.preventDefault();
-                          getTime('day')
-                        }} className={ lineData.datasets[0].label === 'day' ? null: 'text-muted' }> Day </a>
-                        <a href="#" onClick={(e) => {
-                          e.preventDefault();
-                          getTime('month')
-                        }} className={ lineData.datasets[0].label === 'month' ? null: 'text-muted' }> Month </a>
-              </div> */}
-
-              <div className="card-block">
-                  <Line data={lineData} />
-              </div>
-
-            </div>
-          </div>
-        </div>
+        <TimeTable socket={socket} url={url} />
 
 
         <div className="row">
@@ -267,7 +215,7 @@ const Charts = () => {
               </div>
 
               <div className="card-block">
-                  <Doughnut data={doughnutData} />
+                  <Doughnut data={doughnutData} width={400} height={400} options={{ maintainAspectRatio: false }}/>
               </div>
             </div>
           </div>
@@ -279,7 +227,7 @@ const Charts = () => {
                   </div>
 
                   <div className="card-block">
-                      <Pie data={pieData} />
+                      <Pie data={pieData} width={400} height={400} options={{ maintainAspectRatio: false }}/>
                   </div>
               </div>
           </div>
@@ -294,7 +242,7 @@ const Charts = () => {
               </div>
 
               <div className="card-block">
-                  <PolarArea data={baseData} />
+                  <PolarArea data={baseData} width={400} height={400} options={{ maintainAspectRatio: false }}/>
               </div>
             </div>
           </div>
@@ -306,7 +254,7 @@ const Charts = () => {
               </div>
 
               <div className="card-block">
-                  <Bar data={barData} />
+                  <Bar data={barData} width={400} height={400} options={{ maintainAspectRatio: false }}/>
               </div>
             </div>
           </div>
@@ -315,13 +263,11 @@ const Charts = () => {
     )
   }
 
-  console.log(data)
-
   return (
     <>
       <Header />
+      {!isAuth() ? <Redirect to='/login' /> : null}
       <ToastContainer />
-        {/* {!isAuth() ?  <Redirect to="/login" />: null}  */}
         {chartForm()}
       <Footer />
 

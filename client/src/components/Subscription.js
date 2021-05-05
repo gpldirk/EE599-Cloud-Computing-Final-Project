@@ -96,13 +96,12 @@ const Subscription = ({ history }) => {
 
                 <hr />
                 <ul className="fa-ul">
-                  <li><span className="fa-li"><i className="fas fa-check"></i></span><strong>5 Users</strong></li>
-                  <li><span className="fa-li"><i className="fas fa-check"></i></span>50GB Storage</li>
-                  <li><span className="fa-li"><i className="fas fa-check"></i></span>Unlimited Public Projects</li>
-                  <li><span className="fa-li"><i className="fas fa-check"></i></span>Community Access</li>
-                  <li><span className="fa-li"><i className="fas fa-check"></i></span>Unlimited Private Projects</li>
+                  <li><span className="fa-li"><i className="fas fa-check"></i></span><strong>Create and share branded links</strong></li>
+                  <li><span className="fa-li"><i className="fas fa-check"></i></span>Basic email support</li>
+                  <li><span className="fa-li"><i className="fas fa-check"></i></span>Redirect any link</li>
+                  <li><span className="fa-li"><i className="fas fa-check"></i></span>Bulk link shortening</li>
+                  <li><span className="fa-li"><i className="fas fa-check"></i></span>Emoji Generator</li>
                   <li><span className="fa-li"><i className="fas fa-check"></i></span>Dedicated Phone Support</li>
-                  <li><span className="fa-li"><i className="fas fa-check"></i></span>Free Subdomain</li>
                   <li className="text-muted"><span className="fa-li"><i className="fas fa-times"></i></span>Monthly Status Reports</li>
                 </ul>
                 <button className="btn btn-block btn-primary text-uppercase" onClick={() => {
@@ -127,13 +126,12 @@ const Subscription = ({ history }) => {
 
                 <hr />
                 <ul className="fa-ul">
-                  <li><span className="fa-li"><i className="fas fa-check"></i></span><strong>Unlimited Users</strong></li>
-                  <li><span className="fa-li"><i className="fas fa-check"></i></span>150GB Storage</li>
-                  <li><span className="fa-li"><i className="fas fa-check"></i></span>Unlimited Public Projects</li>
-                  <li><span className="fa-li"><i className="fas fa-check"></i></span>Community Access</li>
-                  <li><span className="fa-li"><i className="fas fa-check"></i></span>Unlimited Private Projects</li>
+                  <li><span className="fa-li"><i className="fas fa-check"></i></span><strong>Advanced analytics</strong></li>
+                  <li><span className="fa-li"><i className="fas fa-check"></i></span>QR Codes</li>
+                  <li><span className="fa-li"><i className="fas fa-check"></i></span>Campaigns</li>
+                  <li><span className="fa-li"><i className="fas fa-check"></i></span>At scale link generation</li>
+                  <li><span className="fa-li"><i className="fas fa-check"></i></span>Mobile deep links</li>
                   <li><span className="fa-li"><i className="fas fa-check"></i></span>Dedicated Phone Support</li>
-                  <li><span className="fa-li"><i className="fas fa-check"></i></span><strong>Unlimited</strong> Free Subdomains</li>
                   <li><span className="fa-li"><i className="fas fa-check"></i></span>Monthly Status Reports</li>
                 </ul>
                 <button className="btn btn-block btn-primary text-uppercase" onClick={() => {

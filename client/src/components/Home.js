@@ -7,7 +7,6 @@ import '../media.css'
 import Header from './Header'
 import Footer from './Footer'
 import ShortenUrl from './ShortenUrl'
-import ShortenUrlUser from './ShortenUrlUser'
 
 import hero from './res/hero.png'
 import grow1 from './res/grow1.png'
@@ -129,14 +128,7 @@ export default function Home({history}) {
             <Header />
             {heroSection()}
 
-            {!isAuth() && (
-                <ShortenUrl />
-            )}
-
-            {isAuth() && (
-                <ShortenUrlUser />
-            )}
-
+            <ShortenUrl />
             {surlAbout()}
             {brandSrul()}
             <Footer />

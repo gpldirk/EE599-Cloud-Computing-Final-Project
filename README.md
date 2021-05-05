@@ -15,9 +15,11 @@ cd client
 ```
 npm install
 ```
+
 ```
 npm start
 ```
+start redis on http://localhost:6379
 
 wait for browser opening on http://localhost:3000
 
@@ -38,14 +40,3 @@ https://codenebula.io/demos/
 https://github.com/d3/d3-scale-chromatic
 
 https://dev.to/taimoorkhan/how-to-add-dynamic-colors-in-chartjs-3mlk
-
-http://uurl.ml/
-
-https://github.com/dennyhong96/harmonize-tools-collection/blob/master/clients/orgchart/src/Components/landing/Features.js
-
-https://www.npmjs.com/package/react-copy-to-clipboard
-
-https://rosskhanas.github.io/react-qr-code/
-
-
-

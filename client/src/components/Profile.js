@@ -16,7 +16,7 @@ const Profile = ({ history }) => {
   });
 
   const loadProfile = () => {
-    const token = getCookie('token');
+    const {token} = getCookie();
     axios
       .get(`${process.env.REACT_APP_API_URL}/user/${isAuth()._id}`, {
         headers: {
