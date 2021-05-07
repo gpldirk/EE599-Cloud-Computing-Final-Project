@@ -14,7 +14,6 @@ const Team = () => {
 
         <div className="container mb-0">
           <div className="row">
-          <div className="col-md-2"></div>
             
             <div className="col-md-4">
               <div className="card border-0 shadow">
@@ -35,12 +34,22 @@ const Team = () => {
                 <div className="card-body text-center">
                   <h5 className="card-title mb-0">Team Member</h5>
                   <div className="card-text text-black-50">Shuhao Chang - Backend</div>
-                  <a href="mailto:gepeilu@usc.edu"><i className="far fa-envelope"></i> changchauncey@gmail.com</a>
+                  <a href="mailto:changchauncey@gmail.com"><i className="far fa-envelope"></i> changchauncey@gmail.com</a>
                 </div>
               </div>
             </div>
 
-            <div className="col-md-2"></div>
+            <div className="col-md-4">
+              <div className="card border-0 shadow">
+                <img src="https://miro.medium.com/max/1400/0*tYXVdz_genOEhZCH" className="card-img-top" alt="..." />
+                <div className="card-body text-center">
+                  <h5 className="card-title mb-0">Team Member</h5>
+                  <div className="card-text text-black-50">Zhongze Chen - Infra && AWS</div>
+                  <a href="mailto:zhongzec@usc.edu"><i className="far fa-envelope"></i> zhongzec@usc.edu</a>
+                </div>
+
+              </div>
+            </div>
 
           </div>
         </div>    

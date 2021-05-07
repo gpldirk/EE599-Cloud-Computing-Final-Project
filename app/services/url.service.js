@@ -24,10 +24,13 @@ encode = encode.concat(genCharArray("a", "z"));
 encode = encode.concat(genCharArray("0", "9"));
 
 // generate shortURL and save to redis and db
-var getShortUrl = function (userId, longUrl, callback) {
-    console.log(longUrl, userId);
+var getShortUrl = function (userId, longUrl, subscriptionExpired, callback) {
+    console.log("need a shortUrl from longUrl " + longUrl);
     if (longUrl.indexOf("http") === -1) {
         longUrl = "http://" + longUrl;
+    }
+    if (subscriptionExpired) {
+        userId = "";
     }
 
     redisClient.get(userId + ":" + longUrl, function (err, shortUrl) {
@@ -37,20 +40,24 @@ var getShortUrl = function (userId, longUrl, callback) {
             callback({
                 shortUrl: shortUrl,
                 longUrl: longUrl,
-                userId: userId
             });
+
         } else {
             
-            UrlModel.findOne({userId: userId, longUrl: longUrl}, function (err, data) {
+            UrlModel.findOne({userId: userId, longUrl: longUrl}, function (err, url) {
                 // if longUrl in db
-                if (data) {
-                    callback(data);
+                if (url) {
+                    console.log('Mongo is called');
                     // save to redis
-                    redisClient.set(data.shortUrl, data.longUrl);
-                    redisClient.set(userId + ":" + data.longUrl, data.shortUrl);
+                    redisClient.set(shortUrl + ":" + "longUrl", longUrl, 'EX', 60);
+                    redisClient.set(shortUrl + ":" + "userId", userId, 'EX', 60);
+                    redisClient.set(userId + ":" + data.longUrl, data.shortUrl, 'EX', 60);
+
+                    callback(url);
                 } else {
                     
                     // if no longUrl match, generate shortUrl, save to db and cache
+                    console.log('New shortUrl generated.');
                     generateShortUrl(userId, function (shortUrl) {
                         var url = new UrlModel({
                             shortUrl: shortUrl,
@@ -61,8 +68,10 @@ var getShortUrl = function (userId, longUrl, callback) {
                         console.log(url);
                         // save to db and redis
                         url.save();
-                        redisClient.set(shortUrl, longUrl);
-                        redisClient.set(userId + ":" + longUrl, shortUrl);
+
+                        redisClient.set(shortUrl + ":" + "longUrl", longUrl, 'EX', 60);
+                        redisClient.set(shortUrl + ":" + "userId", userId, 'EX', 60);
+                        redisClient.set(userId + ":" + longUrl, shortUrl, 'EX', 60);
                         callback(url);
                     });
                 }
@@ -71,15 +80,17 @@ var getShortUrl = function (userId, longUrl, callback) {
     });
 };
 
-// get emoji shortURL
+// get shortURL
 var generateShortUrl = function (userId, callback) {
     if (userId === "") {
         callback(convertToChar());
     } else {
-        // check if user has plan and not at end phrase
+        // check if user has plan and not expired
         User.findById(userId, (err, user) => {
-            if (user.plan == 'none' || user.endDate == null || user.endDate < new Date().toISOString()) {
+            if (err || user.plan == 'none' || user.endDate == null 
+            || user.endDate < new Date().getTime()) {
                 callback(convertToChar());
+
             } else {
                 callback(convertToEmoji());
             }
@@ -117,28 +128,52 @@ var convertToChar = function () {
     return result;
 };
 
-// get longURL from LRU or db
+// get longURL from redis
 var getLongUrl = function (shortUrl, callback) {
     console.log("need a longUrl from shortUrl " + shortUrl);
-
-    redisClient.get(shortUrl, function (err, longUrl) {
+    
+    redisClient.get(shortUrl + ":" + "longUrl", function (err, longUrl) {
         // if shortUrl in redis
-        if (shortUrl) {
-            console.log("Byebye mongo!");
-            callback({
-                shortUrl: shortUrl,
-                longUrl: longUrl,
-            });
+        console.log(longUrl)
+        if (longUrl) {
+            redisClient.get(shortUrl + ":" + "userId", function (err, userId) {
+                console.log(userId)
+                if (userId !== undefined) {
+                    console.log("Byebye mongo!");
+                    callback({
+                        shortUrl: shortUrl,
+                        longUrl: longUrl,
+                        userId: userId,
+                    });
+
+                } else {
+                    // if userId not in redis
+                    console.log('Mongo is called');
+                    UrlModel.findOne({shortUrl: shortUrl}, function (err, url) {
+                        console.log(url)
+                        if (url) {
+                            // save to redis
+                            redisClient.set(shortUrl + ":" + "longUrl", url.longUrl, 'EX', 60);
+                            redisClient.set(shortUrl + ":" + "userId", url.userId, 'EX', 60);
+                        }
+
+                        callback(url);
+                    });
+                }
+            })
 
         } else {
-            // if shortUrl in db
+            // if shortUrl not in redis
             console.log('Mongo is called');
-            UrlModel.findOne({shortUrl: shortUrl}, function (err, data) {
-                callback(data);
-                if (data) {
+            UrlModel.findOne({shortUrl: shortUrl}, function (err, url) {
+                console.log(url)
+                if (url) {
                     // save to redis
-                    redisClient.set(shortUrl, longUrl);
+                    redisClient.set(shortUrl + ":" + "longUrl", url.longUrl, 'EX', 60);
+                    redisClient.set(shortUrl + ":" + "userId", url.userId, 'EX', 60);
                 }
+
+                callback(url);
             });
         }
     })

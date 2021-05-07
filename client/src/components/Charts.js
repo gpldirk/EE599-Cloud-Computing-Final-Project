@@ -99,6 +99,7 @@ const Charts = () => {
             ...prev,
             doughnutData: temp
           }))
+          console.log(doughnutData)
         } else if (chart === 'pie') {
           const temp = chartData({
             labels: labels,
@@ -267,6 +268,7 @@ const Charts = () => {
     <>
       <Header />
       {!isAuth() ? <Redirect to='/login' /> : null}
+      {isAuth().subscriptionExpired ? <Redirect to='/subscription' /> : null}
       <ToastContainer />
         {chartForm()}
       <Footer />

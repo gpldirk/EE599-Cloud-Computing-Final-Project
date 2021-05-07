@@ -82,11 +82,11 @@ const Activate = ({ match }) => {
     </div>
     )
   }
-
+  
   return (
     <>
       <Header />
-      {isAuth() ? <Redirect to='/dashboard' /> : null}
+      {isAuth() ? <Redirect to='/profile' /> : null}
       <ToastContainer />
       {activateForm()}
       <Footer />

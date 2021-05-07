@@ -12,6 +12,7 @@ const Profile = ({ history }) => {
     email: '',
     password: '',
     textChange: 'Update',
+    subscriptionExpired: true, 
     plan: ''
   });
 
@@ -24,8 +25,12 @@ const Profile = ({ history }) => {
         }
       })
       .then(res => {
-        const { plan, name, email } = res.data;
-        setFormData({ ...formData, plan, name, email });
+        updateUser(res, () => {
+          
+          console.log(res)
+          const { plan, name, email, subscriptionExpired } = res.data;
+          setFormData({ ...formData, plan, name, email, subscriptionExpired });
+        });
       })
       .catch(err => {
         console.log(err)
@@ -42,7 +47,7 @@ const Profile = ({ history }) => {
     loadProfile();
   }, []);
 
-  const { name, email, password, textChange, plan } = formData;
+  const { name, email, password, textChange, plan, subscriptionExpired } = formData;
   const handleChange = text => e => {
     setFormData({ ...formData, [text]: e.target.value });
   };
@@ -136,7 +141,9 @@ const Profile = ({ history }) => {
                   <span className='ml-3'>{textChange}</span>
                 </button>
             </form>
-            <button className="btn btn-lg btn-block mt-4 text-white mb-3 shadow-sm rounded form-btn" onClick={manageBilling}>Current Subscription: {plan}</button>
+            <button className="btn btn-lg btn-block mt-4 text-white mb-3 shadow-sm rounded form-btn" >Current Subscription: {plan}</button>
+            <button className="btn btn-lg btn-block mt-4 text-white mb-3 shadow-sm rounded form-btn">Status: {subscriptionExpired ? "Expired": "Active"}</button>
+            <button className="btn btn-lg btn-block mt-4 text-white mb-3 shadow-sm rounded form-btn" onClick={manageBilling}>Check Billing Details</button>
         </div>
       </div>
      </div> 

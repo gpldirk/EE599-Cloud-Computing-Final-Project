@@ -159,7 +159,7 @@ const Signup = () => {
   return (
     <>
       <Header />
-      {isAuth() ? <Redirect to='/dashboard' /> : null}
+      {isAuth() ? <Redirect to='/profile' /> : null}
       <ToastContainer />
       {signUpForm()}
       <Footer />

@@ -29,7 +29,6 @@ exports.checkoutController = (req, res) => {
       user.hasTrial = true
       user.endDate = n
       user.save()
-
       
       res.send({
         sessionId: session.id
@@ -55,5 +54,18 @@ exports.billingController = (req, res) => {
     const session = await Stripe.createBillingSession(user.billingID)
     console.log('session', session)
     res.json({ url: session.url })
+  })
+}
+
+
+exports.requireSubscription = (req, res, next) => {
+  User.findById(req.user._id).exec((err, user) => {
+    if (user.plan === 'none' || user.endDate < new Date().getTime()) {
+      return res.status(400).json({
+        error: 'Please make subscriptions before using services',
+      })
+    } else {
+      next();
+    }
   })
 }

@@ -7,10 +7,10 @@ var host = process.env.REDIS_PORT_6379_TCP_ADDR;
 var port = process.env.REDIS_PORT_6379_TCP_PORT;
 var redisClient = redis.createClient(port, host);
 
-
-var logRequest = function (shortUrl, req) {
-    var reqInfo = {};
+var logRequest = function (userId, shortUrl, req) {
+    const reqInfo = {}
     reqInfo.shortUrl = shortUrl;
+    reqInfo.userId = userId;
     reqInfo.referer = req.headers.referer || "Unknown";
     reqInfo.platform = req.useragent.platform || "Unknown";
     reqInfo.browser = req.useragent.browser || "Unknown";

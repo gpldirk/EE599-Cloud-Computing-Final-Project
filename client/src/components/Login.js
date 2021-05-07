@@ -220,7 +220,7 @@ const Login = ({ history }) => {
   return (
     <>
       <Header />
-      {isAuth() ? <Redirect to='/dashboard' /> : null}
+      {isAuth() ? <Redirect to='/profile' /> : null}
       <ToastContainer />
       {signInForm()}
       <Footer />

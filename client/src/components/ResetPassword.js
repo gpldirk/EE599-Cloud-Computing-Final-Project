@@ -116,7 +116,7 @@ const ResetPassword = ({match}) => {
   return (
     <>
       <Header />
-      {isAuth() ? <Redirect to='/dashboard' /> : null}
+      {isAuth() ? <Redirect to='/profile' /> : null}
       <ToastContainer />
       {resetPasswordForm()}
       <Footer />

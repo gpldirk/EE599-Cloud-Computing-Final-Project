@@ -10,6 +10,7 @@ import logo from './res/logo.png'
 const ShortenUrl = () => {
 
     const userId = isAuth() ? isAuth()._id : "";
+    const subscriptionExpired = isAuth() ? isAuth().subscriptionExpired : true;
     const [url, setUrl] = useState({
         originalUrl: '',
         longUrl: '',
@@ -36,7 +37,8 @@ const ShortenUrl = () => {
             axios
                 .post(`${process.env.REACT_APP_API_URL}/urls`, {
                     userId, 
-                    longUrl: originalUrl
+                    longUrl: originalUrl,
+                    subscriptionExpired,
                 })
                 .then(response => {
                     console.log(response.data)
@@ -86,7 +88,8 @@ const ShortenUrl = () => {
                         <div className="card-body">
                             <ul className="list-group list-group-flush">
                                 <li className="list-group-item row d-flex p-1 mt-1">
-                                    <span className="col-md-5 pt-1">{longUrl}</span>
+                                    <span className="col-md-5 pt-1"><a href={longUrl} target="_blank" rel="noopener noreferrer">{longUrl}</a></span>
+
                                     <a className="col-md-4 list-group-links pt-1" href={`${shortUrlToShow}`} target="_blank" rel="noopener noreferrer">{shortUrlToShow}</a>
 
                                     <span className="col-md-1">
@@ -98,12 +101,12 @@ const ShortenUrl = () => {
                                     </span>
 
 
-                                    { isAuth() &&
+                                    { isAuth() && !isAuth().subscriptionExpired &&
                                     <span className="col-md-1">
                                         <button type="button" className="copy btn btn-light text-primary" onClick={() => generateQRCode()}>QR</button>
                                     </span>
                                     }
-                                    { isAuth() &&
+                                    { isAuth() && !isAuth().subscriptionExpired &&
                                     <span className="col-md-1">
                                         <Link type="button" className="copy btn btn-light text-primary" to={`/urls/${shortUrl}`} >Details</Link>
                                     </span>

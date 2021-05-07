@@ -4,8 +4,9 @@ var Schema = mongoose.Schema;
 var UrlSchema = new Schema({
     shortUrl: String,
     longUrl: String,
-    userId: String,  // change username to userId
-    creationTime: Date
+    userId: String, 
+    creationTime: Date,
+    emoji: false,
 });
 
 var urlModel = mongoose.model("UrlModel", UrlSchema);

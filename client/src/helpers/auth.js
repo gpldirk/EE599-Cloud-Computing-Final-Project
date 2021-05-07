@@ -63,7 +63,7 @@ export const authenticate = (response, remember, next) => {
 };
 
 // Access user info from localstorage
-// {"_id":"607a0105e91ba50aa9e8f2ef","email":"lugepei1993@gmail.com","name":"Frank LU"}
+// {"_id":"609473f80fb074245822e1d7","email":"lugepei1993@gmail.com","name":"Frank LU","subscriptionExpired":true}
 export const isAuth = () => {
     if (window !== 'undefined') {
         const cookieChecked = getCookie('token');

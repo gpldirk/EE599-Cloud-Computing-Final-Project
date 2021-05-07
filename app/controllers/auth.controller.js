@@ -93,7 +93,6 @@ exports.activationController = (req, res) => {
 
             return res.json({
               success: true,
-              message: user,
               message: 'Signup success. Please signin'
             });
           }
@@ -133,13 +132,16 @@ exports.signinController = (req, res) => {
         });
       }
 
-      // check has Trialed
-      const isTrialExpired = user.plan !== 'none' && user.endDate < new Date().getTime()
-      if (isTrialExpired) {
-        console.log('trial expired')
-        user.hasTrial = false
-        user.save()
-      }
+     // check has Trialed
+     const isTrialExpired = (user.plan !== 'none')
+     if (isTrialExpired) {
+       console.log('trial expired')
+       user.hasTrial = false
+       user.save()
+     }
+     // check if subscription has expired
+     const subscriptionExpired = (user.plan === 'none')
+     || (user.plan !== 'none' && user.endDate < new Date().getTime())
 
       // generate a token and send to client
       const token = jwt.sign(
@@ -159,6 +161,7 @@ exports.signinController = (req, res) => {
           _id,
           name,
           email,
+          subscriptionExpired, 
         }
       });
     });
@@ -309,12 +312,15 @@ exports.googleController = (req, res) => {
         User.findOne({ email }).exec(async (err, user) => {
           if (user) {
             // check has Trialed
-            const isTrialExpired = user.plan !== 'none' && user.endDate < new Date().getTime()
+            const isTrialExpired = (user.plan !== 'none')
             if (isTrialExpired) {
               console.log('trial expired')
               user.hasTrial = false
               user.save()
             }
+            // check if subscription has expired
+            const subscriptionExpired = (user.plan === 'none')
+            || (user.plan !== 'none' && user.endDate < new Date().getTime())
 
             const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
               expiresIn: '7d'
@@ -322,7 +328,7 @@ exports.googleController = (req, res) => {
             const { _id, email, name } = user;
             return res.json({
               token,
-              user: { _id, email, name }
+              user: { _id, email, name, subscriptionExpired }
             });
 
           } else {
@@ -352,7 +358,7 @@ exports.googleController = (req, res) => {
               const { _id, email, name } = data;
               return res.json({
                 token,
-                user: { _id, email, name }
+                user: { _id, email, name, subscriptionExpired: true }
               });
             });
           }
@@ -383,12 +389,15 @@ exports.facebookController = (req, res) => {
         User.findOne({ email }).exec(async (err, user) => {
           if (user) {
             // check has Trialed
-            const isTrialExpired = user.plan !== 'none' && user.endDate < new Date().getTime()
+            const isTrialExpired = (user.plan !== 'none')
             if (isTrialExpired) {
               console.log('trial expired')
               user.hasTrial = false
               user.save()
             }
+            // check if subscription has expired
+            const subscriptionExpired = (user.plan === 'none')
+            || (user.plan !== 'none' && user.endDate < new Date().getTime())
 
             const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
               expiresIn: '7d'
@@ -396,7 +405,7 @@ exports.facebookController = (req, res) => {
             const { _id, email, name } = user;
             return res.json({
               token,
-              user: { _id, email, name }
+              user: { _id, email, name, subscriptionExpired }
             });
           } else {
 
@@ -425,7 +434,7 @@ exports.facebookController = (req, res) => {
               const { _id, email, name } = data;
               return res.json({
                 token,
-                user: { _id, email, name }
+                user: { _id, email, name, subscriptionExpired: true }
               });
             });
           }

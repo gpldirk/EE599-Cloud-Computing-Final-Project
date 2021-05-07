@@ -2,10 +2,11 @@ const express = require('express');
 const router = express.Router();
 
 const { requireSignin } = require('../controllers/auth.controller');
+const { requireSubscription } = require('../controllers/stripe.controller');
 const { 
     getShortUrlController, getLongUrlController, 
-    getRequestInfoController, getMyUrlsController } = require('../controllers/urls.controller');
-
+    getRequestInfoController, getMyUrlsController, 
+    deleteMyUrlController } = require('../controllers/urls.controller');
 
 // get shortURL
 router.post("/urls", getShortUrlController);
@@ -14,9 +15,12 @@ router.post("/urls", getShortUrlController);
 router.get("/urls/:shortUrl", getLongUrlController);
 
 // get shortURL request info
-router.get("/urls/:shortUrl/:info", requireSignin, getRequestInfoController); /// signin test
+router.get("/urls/:shortUrl/:info", requireSignin, requireSubscription, getRequestInfoController); /// signin test
 
 // get url records table for user
-router.get("/myUrls", requireSignin, getMyUrlsController);
+router.get("/myUrls", requireSignin, requireSubscription, getMyUrlsController);
+
+// delete short url for user
+router.delete("/deleteUrl/:shortUrl", requireSignin, requireSubscription, deleteMyUrlController);
 
 module.exports = router;

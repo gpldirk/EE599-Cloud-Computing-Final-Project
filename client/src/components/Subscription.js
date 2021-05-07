@@ -63,7 +63,7 @@ const Subscription = ({ history }) => {
        <div className="col-md-2"></div>
         <div className="col-md-10">
         <h1>Upgrade your links</h1>
-        <p>Get one essential solution to generate, share and track branded links for every form of communication. Choose your plan below.</p>
+        <p>Get one essential solution to generate, share and track links for every form of communication. Choose your plan below with 3 days free trial.</p>
         <div className="d-flex">
         <p className="mr-3">Save up to 33% when you pay annually.</p>
             <div className='custom-control custom-switch custom-switch-lg'>

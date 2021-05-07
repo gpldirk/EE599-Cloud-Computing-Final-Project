@@ -9,15 +9,22 @@ exports.readController = (req, res) => {
                 error: 'User not found'
             });
         }
-        user.hashed_password = undefined;
-        user.salt = undefined;
-        res.json(user);
+
+        const {email, name, _id, plan} = user;
+        const subscriptionExpired = (user.plan === 'none')
+            || (user.plan !== 'none' && user.endDate < new Date().getTime())
+
+        res.json({
+            email,
+            name, 
+            _id, 
+            plan,
+            subscriptionExpired,
+        });
     });
 };
 
 exports.updateController = (req, res) => {
-    
-    // console.log('UPDATE USER - req.user', req.user, 'UPDATE DATA', req.body);
     const { name, password } = req.body;
 
     User.findOne({ _id: req.user._id }, (err, user) => {
@@ -51,9 +58,17 @@ exports.updateController = (req, res) => {
                     error: 'User update failed'
                 });
             }
-            updatedUser.hashed_password = undefined;
-            updatedUser.salt = undefined;
-            res.json(updatedUser);
+
+            const {email, name, _id} = updatedUser;
+            const subscriptionExpired = (updatedUser.plan === 'none')
+                || (updatedUser.plan !== 'none' && updatedUser.endDate < new Date().getTime())
+
+            res.json({
+                email,
+                name, 
+                _id, 
+                subscriptionExpired,
+            });
         });
     });
 };
