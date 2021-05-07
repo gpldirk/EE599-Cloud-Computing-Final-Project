@@ -49,10 +49,71 @@ if (process.env.NODE_ENV === 'development') {
     app.use("/", express.static(path.join(__dirname, "build")));
 }
 
+
 // Use Routes
 app.use('/api/v1', authRouter)
 app.use('/api/v1', userRouter)
 app.use('/api/v1', urlsRouter)
+
+// Intercept frontend routes
+if (process.env.NODE_ENV === "production") {
+    app.use("/features", (req, res, next) => {
+        res.sendFile(
+            path.join(__dirname, "build", "index.html")
+        )}
+    )
+    app.use("/subscription", (req, res, next) => {
+        res.sendFile(
+            path.join(__dirname, "build", "index.html")
+        )}
+    )
+    app.use("/profile", (req, res, next) => {
+        res.sendFile(
+            path.join(__dirname, "build", "index.html")
+        )}
+    )
+    app.use("/dashboard", (req, res, next) => {
+        res.sendFile(
+            path.join(__dirname, "build", "index.html")
+        )}
+    )
+    app.use("/team", (req, res, next) => {
+        res.sendFile(
+            path.join(__dirname, "build", "index.html")
+        )}
+    )
+    app.use("/login", (req, res, next) => {
+        res.sendFile(
+            path.join(__dirname, "build", "index.html")
+        )}
+    )
+    app.use("/signup", (req, res, next) => {
+        res.sendFile(
+            path.join(__dirname, "build", "index.html")
+        )}
+    )
+    app.use("/users/*", (req, res, next) => {
+        res.sendFile(
+            path.join(__dirname, "build", "index.html")
+        )}
+    )
+    app.use("/auth/activate/:token", (req, res, next) => {
+        res.sendFile(
+            path.join(__dirname, "build", "index.html")
+        )}
+    )
+    app.use("/urls/:url", (req, res, next) => {
+        res.sendFile(
+            path.join(__dirname, "build", "index.html")
+        )}
+    )
+    app.use("/dashboard", (req, res, next) => {
+        res.sendFile(
+            path.join(__dirname, "build", "index.html")
+        )}
+    )
+};
+
 app.use("/:shortUrl", redirectRouter)
 app.use((req, res) => {
     res.status(404).json({
