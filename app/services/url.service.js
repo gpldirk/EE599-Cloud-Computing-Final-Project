@@ -51,7 +51,7 @@ var getShortUrl = function (userId, longUrl, subscriptionExpired, callback) {
                     // save to redis
                     redisClient.set(shortUrl + ":" + "longUrl", longUrl, 'EX', 60);
                     redisClient.set(shortUrl + ":" + "userId", userId, 'EX', 60);
-                    redisClient.set(userId + ":" + data.longUrl, data.shortUrl, 'EX', 60);
+                    redisClient.set(userId + ":" + longUrl, url.shortUrl, 'EX', 60);
 
                     callback(url);
                 } else {
