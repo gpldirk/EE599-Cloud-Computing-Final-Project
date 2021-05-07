@@ -4,7 +4,22 @@
 git clone https://github.com/gpldirk/EE599-Cloud-Computing.git
 ```
 
+```
+cd EE599-Cloud-Computing/
+```
+```
+cd app/
+```
+```
+npm install
+```
+```
+cd ..
+``` 
+
+
 #### Running 3 instances with docker 
+under EE599-Cloud-Computing/
 ```
 docker-compose up --build
 ```
@@ -25,6 +40,8 @@ open browser on http://localhost:8000
 
 
 Youtube Demo: 
+
+AWS Demo Link:
 
 
 Reference: 
