@@ -13,12 +13,9 @@ cd app/
 ```
 npm install
 ```
-```
-cd ..
-``` 
 
 
-#### Running 3 instances with docker 
+#### Running 3 instances with docker and docker-compose
 under EE599-Cloud-Computing/
 ```
 docker-compose up --build
@@ -26,22 +23,28 @@ docker-compose up --build
 
 open browser on http://localhost:8000
 
-#### Running one instances locally
-start redis on http://localhost:6379
 
+#### Project description
+
+client folder contains all the files for react app, run following command to build/bundle it
 ```
-cd app
+npm install && npm run build
 ```
+after build the react app, just copy the build folder from client to app
+
+app foler contains all the files for nodejs backend app and client build folder, run following command to start
 ```
 npm install && nodemon server.js
 ```
 
-open browser on http://localhost:8000
+nginx folder contains the config file and docker file for nginx
+
+docker-compose.yml contains the container orchestration process
 
 
-Youtube Demo: 
+Youtube Demo: https://www.youtube.com/watch?v=aAGtCN4xnwY
 
-AWS Demo Link:
+AWS Demo Link: https://uurl.ml
 
 
 Reference: 
@@ -67,7 +70,7 @@ https://github.com/stripe/stripe-payments-demo.git
 https://github.com/Mohammed-Abdelhady/FULL-MERN-AUTH-Boilerplate.git
 
 https://github.com/bsanket16/url-shortener.git
-s
+
 https://dev.to/rinkiyakedad/dockerizing-the-mern-stack-without-docker-compose-17m6
 
 
