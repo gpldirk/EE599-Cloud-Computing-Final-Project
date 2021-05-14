@@ -14,6 +14,37 @@ cd app/
 npm install
 ```
 
+#### add your own environment variables
+under client/.env
+```
+REACT_APP_GOOGLE_CLIENT=
+
+REACT_APP_FACEBOOK_CLIENT=
+
+REACT_APP_STRIPE_PUBLIC_KEY=
+```
+
+under app/config/config.env
+```
+MONGO_URI = 
+
+GMAIL_USER = 
+GMAIL_PASS =
+EMAIL_FROM=
+
+GOOGLE_CLIENT=
+
+PRODUCT_BASIC_MO=
+PRODUCT_PRO_MO=
+PRODUCT_BASIC_YEAR=
+PRODUCT_PRO_YEAR=
+TRIAL_DAYS=3
+
+STRIPE_SECRET_KEY=
+STRIPE_WEBHOOK_SECRET=
+```
+
+
 
 #### Running 3 instances with docker and docker-compose
 under EE599-Cloud-Computing/
@@ -72,6 +103,10 @@ https://github.com/Mohammed-Abdelhady/FULL-MERN-AUTH-Boilerplate.git
 https://github.com/bsanket16/url-shortener.git
 
 https://dev.to/rinkiyakedad/dockerizing-the-mern-stack-without-docker-compose-17m6
+
+
+
+
 
 
 
