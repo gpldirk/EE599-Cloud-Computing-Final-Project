@@ -14,7 +14,7 @@ cd app/
 npm install
 ```
 
-#### add your own environment variables
+#### Add your own environment variables
 under client/.env
 ```
 REACT_APP_GOOGLE_CLIENT=
